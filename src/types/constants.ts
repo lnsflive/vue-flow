@@ -1,84 +1,107 @@
 import type { Node, Edge } from "@vue-flow/core";
-import { MarkerType } from "@vue-flow/core";
+import { Position } from "@vue-flow/core";
+// import { MarkerType } from "@vue-flow/core";
 import { ref } from "vue";
 
 const initialPos = { x: 0, y: 0 };
 
 export const initialNodes = ref<Node[]>([
   {
-    id: "0",
-    type: "special",
+    id: "create",
+    type: "input",
     position: initialPos,
     data: { label: "Create" },
+    style: { backgroundColor: "blue", color: "white" },
   },
-  {
-    id: "1",
+  /*   {
+    id: "approval",
     position: initialPos,
     data: { label: "Approval" },
-  },
+    style: { backgroundColor: "lightgreen" },
+  }, */
   {
-    id: "2",
+    id: "inactive",
     position: initialPos,
     data: { label: "Inactive" },
+    style: { backgroundColor: "grey", color: "white" },
   },
   {
-    id: "3",
+    id: "export",
     position: initialPos,
     data: { label: "Export" },
+    style: { backgroundColor: "navy", color: "white" },
   },
   {
-    id: "4",
+    id: "rotate",
     position: initialPos,
     data: { label: "Rotate" },
+    style: { backgroundColor: "teal", color: "white" },
+    data: {
+      label: "Rotate",
+      hello: "world",
+    },
   },
   {
-    id: "5",
+    id: "active",
     position: initialPos,
     data: { label: "Active" },
+    style: { backgroundColor: "green", color: "white" },
   },
   {
-    id: "6",
-    type: "output",
+    id: "archived",
     position: initialPos,
     data: { label: "Archived" },
+    style: { backgroundColor: "orange" },
   },
   {
-    id: "7",
-    type: "output",
+    id: "deactivated",
     position: initialPos,
     data: { label: "Deactivated" },
+    style: { backgroundColor: "yellow" },
   },
   {
-    id: "8",
+    id: "destroyed",
     type: "output",
     position: initialPos,
     data: { label: "Destroyed" },
+    style: { backgroundColor: "red", color: "white" },
   },
 ]);
 
 export const initialEdges = ref<Edge[]>([
   {
-    id: "e0-1",
-    source: "0",
-    target: "1",
+    id: "s1",
+    source: "create",
+    target: "inactive",
     animated: true,
-    markerEnd: MarkerType.Arrow,
+    type: "smoothstep",
   },
   {
-    id: "e1-2",
-    source: "1",
-    target: "2",
-    markerEnd: MarkerType.Arrow,
+    id: "s2",
+    source: "inactive",
+    target: "export",
+    type: "smoothstep",
   },
-  { id: "e2-3", source: "2", target: "3", markerEnd: MarkerType.Arrow },
+  { id: "s3", source: "export", target: "active", type: "smoothstep" },
   {
-    id: "e2-5",
-    source: "2",
-    target: "5",
-    markerStart: MarkerType.ArrowClosed,
-    markerEnd: MarkerType.ArrowClosed,
+    id: "s3-1",
+    source: "active",
+    target: "rotate",
+    type: "smoothstep",
   },
-  { id: "e5-6", source: "5", target: "6", markerEnd: MarkerType.Arrow },
-  { id: "e5-7", source: "5", target: "7", markerEnd: MarkerType.Arrow },
-  { id: "e3-8", source: "3", target: "8", markerEnd: MarkerType.Arrow },
+  {
+    id: "s3-2",
+    source: "rotate",
+    target: "active",
+    type: "smoothstep",
+  },
+  { id: "s4", source: "active", target: "archived", type: "smoothstep" },
+  { id: "e5-7", source: "archived", target: "deactivated", type: "smoothstep" },
+  {
+    id: "e3-8",
+    source: "deactivated",
+    target: "destroyed",
+    type: "smoothstep",
+    animated: true,
+  },
 ]);

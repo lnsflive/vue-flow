@@ -1,7 +1,7 @@
 <template>
   <div style="width: 100vw; height: 100vh">
     <VueFlow
-      :class="{ dark }"
+      :class="{ 'dark': dark }"
       class="basic-flow"
       :nodes="initialNodes"
       :edges="initialEdges"
@@ -29,8 +29,16 @@
           <Icon v-else name="moon" />
         </ControlButton>
 
-        <ControlButton title="Log `toObject`" @click="logToObject">
+        <!-- <ControlButton title="Log `toObject`" @click="logToObject">
           <Icon name="log" />
+        </ControlButton> -->
+
+        <ControlButton title="Horiontal" @click="onHorizontal">
+          <Icon name="horizontal" />
+        </ControlButton>
+
+        <ControlButton title="Vertical" @click="onVertical">
+          <Icon name="vertical" />
         </ControlButton>
 
         <ControlButton title="Save Graph" @click="onSave">
@@ -44,6 +52,18 @@
         <ControlButton title="Add Random Node" @click="onAdd">
           <Icon name="add" />
         </ControlButton>
+
+        <template #node-special="specialNodeProps">
+          <SpecialNode v-bind="specialNodeProps" />
+        </template>
+
+        <template #edge-special="specialEdgeProps">
+          <SpecialEdge v-bind="specialEdgeProps" />
+        </template>
+
+        <template #edge-custom="customEdgeProps">
+          <CustomEdge v-bind="customEdgeProps" />
+        </template>
       </Controls>
     </VueFlow>
   </div>
@@ -56,8 +76,11 @@ import { ControlButton, Controls } from "@vue-flow/controls";
 import { MiniMap } from "@vue-flow/minimap";
 import { Background } from "@vue-flow/background";
 import { useLayout } from "./composables/useLayout";
+import SpecialNode from "./components/SpecialNode.vue";
+import SpecialEdge from "./components/SpecialEdge.vue";
 import { initialNodes, initialEdges } from "./types/constants";
 import Icon from "./components/Icon.vue";
+import CustomEdge from "./components/CustomEdge.vue";
 
 const { layout } = useLayout();
 const {
@@ -75,7 +98,7 @@ const dark = ref(false);
 const flowKey = "vue-flow-example";
 
 onConnect((connection) => {
-  addEdges(connection);
+  addEdges({...connection, type: "smoothstep"});
 });
 
 async function layoutGraph(direction: string) {
@@ -113,7 +136,8 @@ function logToObject() {
  * Resets the current viewport transformation (zoom & pan)
  */
 function resetTransform() {
-  setViewport({ x: 0, y: 0, zoom: 1 });
+  // setViewport({ x: 0, y: 0, zoom: 1 });
+  layoutGraph('TB');
 }
 
 function toggleDarkMode() {
@@ -148,6 +172,14 @@ function onAdd() {
 
   addNodes([newNode]);
 }
+
+function onHorizontal() {
+  layoutGraph("LR");
+}
+
+function onVertical() {
+  layoutGraph("TB");
+}
 </script>
 
 <style>
@@ -169,5 +201,35 @@ function onAdd() {
   box-shadow: 0 0 4px 1px rgba(0, 0, 0, 0.1);
   padding: 8px;
   border-radius: 5px;
+  background-color: white;
 }
+
+.dark {
+  background-color: #1e1e1e; /* Dark background */
+  color: #ffffff; /* Light text */
+}
+
+/* Make Vue Flow itself dark */
+.dark .vue-flow {
+  background-color: #1e1e1e !important;
+}
+
+.dark .vue-flow__controls {
+  background-color: #333 !important;
+  color: white !important;
+}
+
+.dark .vue-flow__controls-button {
+  background-color: #444 !important;
+  color: white !important;
+}
+
+.dark .vue-flow__minimap {
+  background-color: #222 !important;
+}
+
+.dark .vue-flow__background {
+  stroke: rgba(255, 255, 255, 0.1);
+}
+
 </style>
